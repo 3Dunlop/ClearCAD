@@ -1,0 +1,8 @@
+# comfyui_cad_legend — Python dependencies
+# Install with: pip install -r requirements.txt
+# (Run from your ComfyUI Python environment / venv)
+
+PyMuPDF>=1.23.0          # PDF rendering (fitz)
+opencv-python-headless>=4.8.0  # colour space conversion, morphology, drawing
+numpy>=1.24.0            # array ops (likely already present in ComfyUI)
+Pillow>=9.0.0            # image I/O fallbacks (likely already present)
