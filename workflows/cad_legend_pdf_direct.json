@@ -98,24 +98,6 @@
           "type": "IMAGE",
           "link": 1,
           "slot_index": 0
-        },
-        {
-          "name": "pdf_path",
-          "type": "STRING",
-          "link": 20,
-          "slot_index": 1
-        },
-        {
-          "name": "page_index",
-          "type": "INT",
-          "link": 21,
-          "slot_index": 2
-        },
-        {
-          "name": "dpi",
-          "type": "INT",
-          "link": 22,
-          "slot_index": 3
         }
       ],
       "outputs": [
@@ -146,6 +128,9 @@
       ],
       "properties": {},
       "widgets_values": [
+        "D:/CAD/BSIP_Newhaven_Informal_TRO_plans_v3.pdf",
+        0,
+        600,
         130,
         45,
         12.0
@@ -552,30 +537,6 @@
       9,
       1,
       "STRING"
-    ],
-    [
-      20,
-      1,
-      4,
-      2,
-      1,
-      "STRING"
-    ],
-    [
-      21,
-      1,
-      5,
-      2,
-      2,
-      "INT"
-    ],
-    [
-      22,
-      1,
-      6,
-      2,
-      3,
-      "INT"
     ]
   ],
   "groups": [

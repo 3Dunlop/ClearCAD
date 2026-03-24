@@ -313,6 +313,25 @@ class CAD_PDFSwatchExtractor:
         return {
             "required": {
                 "image": ("IMAGE",),
+                "pdf_path": ("STRING", {
+                    "default": "",
+                    "multiline": False,
+                    "placeholder": "Path to PDF file (e.g. D:/CAD/plan.pdf)",
+                }),
+                "page_index": ("INT", {
+                    "default": 0,
+                    "min": 0,
+                    "max": 9999,
+                    "step": 1,
+                    "display": "number",
+                }),
+                "dpi": ("INT", {
+                    "default": 600,
+                    "min": 72,
+                    "max": 1200,
+                    "step": 50,
+                    "display": "number",
+                }),
                 "key_height_pts": ("INT", {
                     "default": 130,
                     "min": 20,
@@ -335,28 +354,6 @@ class CAD_PDFSwatchExtractor:
                     "display": "number",
                 }),
             },
-            "optional": {
-                "pdf_path": ("STRING", {
-                    "default": "",
-                    "multiline": False,
-                    "placeholder": "Wire from CAD_PDFToImage or type path here",
-                    "forceInput": True,
-                }),
-                "page_index": ("INT", {
-                    "default": 0,
-                    "min": 0,
-                    "max": 9999,
-                    "step": 1,
-                    "forceInput": True,
-                }),
-                "dpi": ("INT", {
-                    "default": 600,
-                    "min": 72,
-                    "max": 1200,
-                    "step": 50,
-                    "forceInput": True,
-                }),
-            }
         }
 
     RETURN_TYPES = ("STRING", "IMAGE", "INT")
@@ -364,9 +361,9 @@ class CAD_PDFSwatchExtractor:
     FUNCTION = "extract"
     CATEGORY = "CAD Legend Processor"
 
-    def extract(self, image, key_height_pts: int, swatch_width_pts: int,
-                dedup_threshold: float, pdf_path: str = "", page_index: int = 0,
-                dpi: int = 600):
+    def extract(self, image, pdf_path: str = "", page_index: int = 0,
+                dpi: int = 600, key_height_pts: int = 130,
+                swatch_width_pts: int = 45, dedup_threshold: float = 12.0):
 
         if not PYMUPDF_AVAILABLE:
             raise ImportError("PyMuPDF is not installed. Run: pip install PyMuPDF")
