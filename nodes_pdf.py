@@ -49,8 +49,8 @@ class CAD_PDFToImage:
             }
         }
 
-    RETURN_TYPES = ("IMAGE", "INT", "INT", "INT")
-    RETURN_NAMES = ("image", "page_count", "image_width", "image_height")
+    RETURN_TYPES = ("IMAGE", "INT", "INT", "INT", "STRING", "INT", "INT")
+    RETURN_NAMES = ("image", "page_count", "image_width", "image_height", "pdf_path", "page_index", "dpi")
     FUNCTION = "load_pdf_page"
     CATEGORY = "CAD Legend Processor"
 
@@ -100,7 +100,7 @@ class CAD_PDFToImage:
         h, w = arr.shape[:2]
         tensor = numpy_to_tensor(arr)
 
-        return (tensor, page_count, w, h)
+        return (tensor, page_count, w, h, pdf_path, page_index, dpi)
 
 
 NODE_CLASS_MAPPINGS = {
