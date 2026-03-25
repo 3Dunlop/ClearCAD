@@ -432,14 +432,24 @@ class CAD_PDFSwatchExtractor:
         kx0, ky0, kx1, ky1 = key_anchor["bbox"]
         LABEL_X_TOL = 20
 
+        # Phrases that appear near the KEY area but are not legend labels
+        _NON_LEGEND = {
+            "KEY", "LEGEND", "KEY:", "LEGEND:",
+        }
+        _NON_LEGEND_CONTAINS = [
+            "CONTINUATION", "VIEWPORT", "SEE SHEET", "REFER TO",
+            "DRAWING NO", "SCALE", "DATE", "REV ", "NOTES",
+        ]
+
         label_lines = [
             l for l in raw_lines
             if l["bbox"][1] > ky0
             and l["bbox"][1] <= ky0 + key_height_pts
             and l["bbox"][0] >= kx0 - LABEL_X_TOL
-            and l["text"].strip().upper()
-               not in ("KEY", "LEGEND", "KEY:", "LEGEND:")
+            and l["text"].strip().upper() not in _NON_LEGEND
             and len(l["text"].strip()) > 4
+            and not any(phrase in l["text"].upper()
+                        for phrase in _NON_LEGEND_CONTAINS)
         ]
 
         if not label_lines:

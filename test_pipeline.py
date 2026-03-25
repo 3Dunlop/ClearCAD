@@ -145,13 +145,22 @@ def extract_legend_via_pdf(pdf_path, page_idx, dpi, image_rgb=None):
     SWATCH_X_GAP = 130   # how far LEFT of heading x a swatch can be
     SWATCH_X_RIGHT = 200 # how far RIGHT of heading x
 
+    # Phrases that appear near the KEY area but are not legend labels
+    _NON_LEGEND = {"KEY", "LEGEND", "KEY:", "LEGEND:"}
+    _NON_LEGEND_CONTAINS = [
+        "CONTINUATION", "VIEWPORT", "SEE SHEET", "REFER TO",
+        "DRAWING NO", "SCALE", "DATE", "REV ", "NOTES",
+    ]
+
     label_lines = [
         l for l in raw_lines
         if l["bbox"][1] > ky0                       # below heading
         and l["bbox"][1] <= ky0 + KEY_HEIGHT
         and l["bbox"][0] >= kx0 - LABEL_X_TOL       # near heading x
-        and l["text"].strip().upper() not in ("KEY", "LEGEND", "KEY:", "LEGEND:")
+        and l["text"].strip().upper() not in _NON_LEGEND
         and len(l["text"].strip()) > 4
+        and not any(phrase in l["text"].upper()
+                    for phrase in _NON_LEGEND_CONTAINS)
     ]
 
     if not label_lines:

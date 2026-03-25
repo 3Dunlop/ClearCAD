@@ -209,6 +209,8 @@ Both use an elliptical kernel (default size 3). Increase to 5–7 for noisier sc
 
 | Parameter | Default | Range | Description |
 |-----------|---------|-------|-------------|
+| `pdf_path` | — | — | Absolute path to the PDF file |
+| `page_index` | 0 | 0–9999 | Zero-indexed page number |
 | `dpi` | 600 | 72–1200 | Must match the DPI used in CAD: PDF to Image |
 | `key_height_pts` | 130 | 20–500 | PDF points below the KEY heading to search for labels |
 | `swatch_width_pts` | 45 | 5–150 | PDF points to the left of label text to sample for colour |
@@ -284,28 +286,81 @@ The test script automatically falls back to Florence-2 if PDF text extraction re
 
 ---
 
-## Example Output
+## Test Results
 
-Processing a UK TRO plan at 600 DPI:
+Tested against a 4-page UK TRO plan (BSIP Newhaven A259, East Sussex) at 600 DPI. All pages render to 7017 x 4959 px.
+
+### Page 0 — Overview Plan
 
 ```
-Legend Entries
-==================================================
- 1. #CDCDCD  RGB(205,205,205)  PROPOSED CHANNEL ALIGNMENT        0.74%
- 2. #D2EE81  RGB(210,238,129)  PROPOSED VERGE/LANDSCAPING        0.64%
- 3. #989898  RGB(152,152,152)  CARRIAGEWAY                       0.04%
- 4. #FFC0BF  RGB(255,192,191)  PROPOSED 24/7 BUS LANE            0.66%
- 5. #FFEFC0  RGB(255,239,192)  PROPOSED FOOTWAY                  0.24%
- 6. #81A0FF  RGB(129,160,255)  PROPOSED CYCLEWAY                 0.08%
- 7. #C0DFFF  RGB(192,223,255)  PROPOSED SHARED FOOTWAY           0.65%
- 8. #FFC08F  RGB(255,192,143)  PROPOSED TACTILE PAVING           0.17%
- 9. #000000  RGB(  0,  0,  0)  PROPOSED ROAD MARKINGS            1.84%
-10. #FFC41A  RGB(255,196, 26)  DOUBLE YELLOW LINE MARKINGS       0.01%
-11. #CDD9FF  RGB(205,217,255)  PROPOSED TRAFFIC SIGNALS          0.45%
-==================================================
+ 1. #CDCDCD  RGB(205,205,205)  PROPOSED CHANNEL ALIGNMENT            0.74%
+ 2. #D2EE81  RGB(210,238,129)  PROPOSED VERGE/LANDSCAPING            0.64%
+ 3. #989898  RGB(152,152,152)  CARRIAGEWAY                           0.04%  [no swatch]
+ 4. #FFC0BF  RGB(255,192,191)  PROPOSED 24/7 BUS LANE                0.66%
+ 5. #FFEFC0  RGB(255,239,192)  PROPOSED FOOTWAY                      0.24%
+ 6. #81A0FF  RGB(129,160,255)  PROPOSED CYCLEWAY                     0.08%
+ 7. #C0DFFF  RGB(192,223,255)  PROPOSED SHARED FOOTWAY AND CYCLEWAY  0.65%
+ 8. #FFC08F  RGB(255,192,143)  PROPOSED TACTILE PAVING               0.17%
+ 9. #000000  RGB(  0,  0,  0)  PROPOSED ROAD MARKINGS                1.84%
+10. #FFC41A  RGB(255,196, 26)  DOUBLE YELLOW LINE MARKINGS           0.01%
+11. #CDD9FF  RGB(205,217,255)  PROPOSED TRAFFIC SIGNALS              0.45%  [dup]
 ```
 
-Coverage percentages show what fraction of the total drawing area each colour occupies.
+### Page 1 — Sheet 01 of 03
+
+```
+ 1. #CDCDCD  PROPOSED CHANNEL ALIGNMENT            2.52%
+ 2. #D2EE81  PROPOSED VERGE/LANDSCAPING            0.44%
+ 3. #989898  CARRIAGEWAY                           0.07%
+ 4. #FFC0BF  PROPOSED 24/7 BUS LANE                3.47%
+ 5. #FFEFC0  PROPOSED FOOTWAY                      0.68%
+ 6. #81A0FF  PROPOSED CYCLEWAY                     0.04%
+ 7. #C0DFFF  PROPOSED SHARED FOOTWAY AND CYCLEWAY  2.33%
+ 8. #FFC083  PROPOSED TACTILE PAVING               0.00%
+ 9. #000000  PROPOSED ROAD MARKINGS                2.79%
+10. #FFC41A  DOUBLE YELLOW LINE MARKINGS           0.02%
+11. #CDD9FF  PROPOSED TRAFFIC SIGNALS              1.96%
+```
+
+### Page 2 — Sheet 02 of 03
+
+```
+ 1. #CDCDCD  PROPOSED CHANNEL ALIGNMENT            1.66%
+ 2. #D2EE81  PROPOSED VERGE/LANDSCAPING            6.54%
+ 3. #989898  CARRIAGEWAY                           0.05%
+ 4. #FFC0BF  PROPOSED 24/7 BUS LANE                2.89%
+ 5. #FFEFC0  PROPOSED FOOTWAY                      0.84%
+ 6. #81A0FF  PROPOSED CYCLEWAY                     0.19%
+ 7. #C0DFFF  PROPOSED SHARED FOOTWAY AND CYCLEWAY  1.54%
+ 8. #FFC081  PROPOSED TACTILE PAVING               0.04%
+ 9. #000000  PROPOSED ROAD MARKINGS                2.50%
+10. #FFC41A  DOUBLE YELLOW LINE MARKINGS           0.11%
+11. #CDD9FF  PROPOSED TRAFFIC SIGNALS              1.19%
+```
+
+### Page 3 — Sheet 03 of 03
+
+```
+ 1. #CDCDCD  PROPOSED CHANNEL ALIGNMENT            0.32%
+ 2. #D2EE81  PROPOSED VERGE/LANDSCAPING            0.11%
+ 3. #989898  CARRIAGEWAY                           0.04%
+ 4. #FFC0BF  PROPOSED 24/7 BUS LANE                0.94%
+ 5. #FFEFC0  PROPOSED FOOTWAY                      0.42%
+ 6. #81A0FF  PROPOSED CYCLEWAY                     0.32%
+ 7. #C0DFFF  PROPOSED SHARED FOOTWAY AND CYCLEWAY  0.32%
+ 8. #FFC081  PROPOSED TACTILE PAVING               0.01%
+ 9. #000000  PROPOSED ROAD MARKINGS                2.60%
+10. #FFC41A  DOUBLE YELLOW LINE MARKINGS           0.04%
+11. #CDD9FF  PROPOSED TRAFFIC SIGNALS              0.20%
+```
+
+### Observations
+
+- **Consistent extraction**: All 4 pages detect exactly 11 legend entries with the same hex values (±2 RGB units for TACTILE PAVING due to anti-aliasing)
+- **Coverage varies by sheet content**: Page 2 has the most verge/landscaping (6.54%) — that section of the A259 has wide grass medians
+- **ROAD MARKINGS (black)** is the noisiest mask at 1.84–2.79% — includes all structural line work
+- **CARRIAGEWAY** at 0.04–0.07% indicates the grey fallback colour barely matches anything — expected since there's no dedicated swatch
+- **TRAFFIC SIGNALS** flagged as duplicate of SHARED FOOTWAY (both pale blue, ΔE ≈ 9.8) but still gets its own mask entry
 
 ---
 
@@ -388,11 +443,14 @@ Optional (Florence-2 fallback only):
 
 ## Known Limitations
 
-- **Black (`#000000`) masks are noisy.** PROPOSED ROAD MARKINGS samples as black, which also matches line work, text, boundary outlines, and the drawing frame. This is inherent to black being used as both a map symbol and a structural element.
-- **Very similar colours** (e.g., two shades of pale blue < 12 ΔE apart) are flagged as duplicates. Adjust `dedup_threshold` to separate them.
+- **Black (`#000000`) masks are noisy (1.84–2.79% coverage).** PROPOSED ROAD MARKINGS samples as black, which also matches all structural line work, text, boundary outlines, title blocks, and the drawing frame. This is inherent to black being used as both a map symbol and a structural element in CAD output. Future versions will use PDF vector stroke width to filter structural lines.
+- **CARRIAGEWAY has no swatch (0.04–0.07% coverage).** The KEY area for CARRIAGEWAY contains no coloured fill — it falls back to `#989898` grey, which matches almost nothing in the drawing. This is correct behaviour (CARRIAGEWAY is typically uncoloured in TRO plans), but the resulting mask is not useful for texturing.
+- **Very similar colours flagged as duplicates.** PROPOSED TRAFFIC SIGNALS (#CDD9FF, pale blue) and PROPOSED SHARED FOOTWAY AND CYCLEWAY (#C0DFFF, pale blue) have a CIE76 distance of ~9.8 ΔE, below the 12.0 default threshold. Both entries appear in the legend JSON but TRAFFIC SIGNALS is tagged `_dup`. Increase `dedup_threshold` to 15+ to separate them, at the risk of allowing true duplicates through.
+- **Body text near KEY can be captured.** Text lines like "FOR CONTINUATION SEE VIEWPORT 1B" that appear within the KEY Y-range are now filtered by keyword blocklist (CONTINUATION, VIEWPORT, SEE SHEET, etc.), but unusual annotation text may still slip through.
 - **No text layer = no PDF extraction.** Pure raster scans without embedded text require the Florence-2 fallback path.
 - **Legend heading required.** The PDF extractor searches for "KEY", "LEGEND", or similar headings. Non-standard headings fall back to inferring legend position from "PROPOSED" text lines.
 - **Single-page legend assumption.** Each page re-extracts its own legend independently. Multi-page plans that share a single KEY on page 0 don't yet propagate it to subsequent pages.
+- **TACTILE PAVING colour varies slightly between pages** (±12 RGB units) due to anti-aliasing of the hatched swatch pattern. This doesn't affect mask quality since the 25 ΔE tolerance absorbs the variation.
 
 ---
 
